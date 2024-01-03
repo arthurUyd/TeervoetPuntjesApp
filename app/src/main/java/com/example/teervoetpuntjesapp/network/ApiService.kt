@@ -7,7 +7,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface ApiService {
 
@@ -27,4 +26,7 @@ interface ApiService {
 
     @POST("gebruikers")
     suspend fun insertGebruiker(@Body gebruiker: Gebruiker)
+
+    @POST("gebruikers/{id}/puntjes")
+    suspend fun addPuntjes(@Path("id") id: Int, @Body puntjesIds: List<Int>)
 }

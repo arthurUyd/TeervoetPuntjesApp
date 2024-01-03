@@ -1,5 +1,7 @@
 package com.example.teervoetpuntjesapp.ui.theme.pages
 
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,11 +33,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.teervoetpuntjesapp.R
 import com.example.teervoetpuntjesapp.componenten.BadgeLijst
+import com.example.teervoetpuntjesapp.componenten.LeidingLoginForm
 import com.example.teervoetpuntjesapp.data.AppViewModel
 import com.example.teervoetpuntjesapp.pages.BadgePagina
 import com.example.teervoetpuntjesapp.pages.LoginForm
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -104,6 +108,13 @@ fun HomeScreen(
                     modifier = Modifier.padding(innerPadding),
                 ) {
                     LoginForm(gebruikers, navController, viewModel)
+                }
+            }
+            composable("leidingLogin") {
+                Box(
+                    modifier = Modifier.padding(innerPadding),
+                ) {
+                    LeidingLoginForm(gebruikers, navController, viewModel)
                 }
             }
             composable("puntjes/{badge}") {

@@ -8,6 +8,7 @@ interface GebruikerRepository {
     suspend fun getGebruikerByEmail(email: String): Gebruiker
 
     suspend fun postGebruiker(gebruiker: Gebruiker)
+    suspend fun addPuntjes(id: Int, lijst: List<Int>)
 }
 
 class NetworkGebruikerRepository(
@@ -18,4 +19,5 @@ class NetworkGebruikerRepository(
     override suspend fun getGebruikerByEmail(email: String): Gebruiker = gebruikerApiService.getGebruikerByEmail(email)
 
     override suspend fun postGebruiker(gebruiker: Gebruiker) = gebruikerApiService.insertGebruiker(gebruiker)
+    override suspend fun addPuntjes(id: Int, lijst: List<Int>) = gebruikerApiService.addPuntjes(id, lijst)
 }

@@ -3,6 +3,7 @@ package com.example.teervoetpuntjesapp.pages
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -71,25 +72,45 @@ fun BadgePagina(
             ) {
                 items(filteredPuntjes) {
                     if (hasValue(viewModel, it.id)) {
-                        PuntjesKaart(puntje = it, isDone = true)
+                        PuntjesKaart(puntje = it, isDone = true, onChecked = { viewModel.behaaldePuntjes.add(it.id) })
                     } else {
-                        PuntjesKaart(puntje = it, isDone = false)
+                        PuntjesKaart(puntje = it, isDone = false, onChecked = { viewModel.behaaldePuntjes.add(it.id) })
                     }
                 }
                 item {
-                    Button(
-                        onClick = { navController.navigate("home") },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        ),
-                    ) {
-                        Text(
-                            text = "Terug",
-                            fontFamily = quicksandFontFamily,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                    Row {
+                        Button(
+                            onClick = { 
+                                viewModel.behaaldePuntjes.clear()
+                                navController.navigate("home") 
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            ),
+                        ) {
+                            Text(
+                                text = "Terug",
+                                fontFamily = quicksandFontFamily,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Button(
+                            onClick = { navController.navigate("leidingLogin") },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            ),
+                        ) {
+                            Text(
+                                text = "Onderteken",
+                                fontFamily = quicksandFontFamily,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }

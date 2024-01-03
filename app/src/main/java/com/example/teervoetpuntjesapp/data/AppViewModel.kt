@@ -4,6 +4,7 @@ import android.net.http.HttpException
 import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,8 @@ class AppViewModel(
 
     val geselecteerdeBadge = mutableStateOf<Badge?>(null)
 
+    val behaaldePuntjes = mutableStateListOf<Int>()
+
     init {
         getGebruikers()
     }
@@ -50,7 +53,7 @@ class AppViewModel(
             }
         }
     }
-
+    
     fun getPuntjes() {
         viewModelScope.launch {
             try {
@@ -84,6 +87,23 @@ class AppViewModel(
                 e.printStackTrace()
             }
         }
+    }
+
+
+    
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+    fun persistPuntjes() {
+        viewModelScope.launch { 
+            try {
+                huidigeGebruiker.value?.let { gebruikerRepository.addPuntjes(it.id, behaaldePuntjes.toList()) }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: HttpException) {
+                e.printStackTrace()
+            }
+        }
+        huidigeGebruiker.value?.let { setGebruiker(it) }
+        behaaldePuntjes.clear()
     }
 
     fun setBadge(badge: Badge) {

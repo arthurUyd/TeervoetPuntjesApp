@@ -10,6 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -22,18 +26,24 @@ import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 fun PuntjesKaart(
     puntje: Puntje,
     isDone: Boolean,
+    onChecked: () -> Unit,
 ) {
+    var checkedState = remember { mutableStateOf(isDone) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().padding(8.dp),
     ) {
         Checkbox(
-            checked = isDone,
-            onCheckedChange = {}, 
+            checked = checkedState.value,
+            onCheckedChange = {
+                checkedState.value = it
+                onChecked()
+            },
             colors = CheckboxDefaults.colors(
                 checkedColor = MaterialTheme.colorScheme.secondaryContainer,
-                uncheckedColor = MaterialTheme.colorScheme.secondaryContainer
+                uncheckedColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
+
         )
         Surface(
             shape = MaterialTheme.shapes.medium,
