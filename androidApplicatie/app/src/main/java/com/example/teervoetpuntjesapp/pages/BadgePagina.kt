@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +47,8 @@ fun BadgePagina(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(14.dp),
+        modifier = Modifier.padding(14.dp)
+            .verticalScroll(rememberScrollState()).fillMaxSize(),
     ) {
         AsyncImage(
             model = badge?.image_url,
@@ -62,59 +64,77 @@ fun BadgePagina(
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
+
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(15.dp).background(MaterialTheme.colorScheme.primaryContainer),
+            Column(
+                modifier = Modifier.padding(15.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
             ) {
-                items(filteredPuntjes) {
+                filteredPuntjes.forEach {
                     if (hasValue(viewModel, it.id)) {
-                        PuntjesKaart(puntje = it, isDone = true, onChecked = { viewModel.behaaldePuntjes.add(it.id) })
+                        PuntjesKaart(
+                            puntje = it,
+                            isDone = true,
+                            onChecked = { viewModel.behaaldePuntjes.add(it.id) },
+                        )
                     } else {
-                        PuntjesKaart(puntje = it, isDone = false, onChecked = { viewModel.behaaldePuntjes.add(it.id) })
+                        PuntjesKaart(
+                            puntje = it,
+                            isDone = false,
+                            onChecked = { viewModel.behaaldePuntjes.add(it.id) },
+                        )
                     }
                 }
-                item {
-                    Row {
-                        Button(
-                            onClick = { 
-                                viewModel.behaaldePuntjes.clear()
-                                navController.navigate("home") 
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            ),
-                        ) {
-                            Text(
-                                text = "Terug",
-                                fontFamily = quicksandFontFamily,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Button(
-                            onClick = { navController.navigate("leidingLogin") },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            ),
-                        ) {
-                            Text(
-                                text = "Onderteken",
-                                fontFamily = quicksandFontFamily,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
+                Row {
+                    Button(
+                        onClick = {
+                            viewModel.behaaldePuntjes.clear()
+                            navController.navigate("home")
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
+                    ) {
+                        Text(
+                            text = "Terug",
+                            fontFamily = quicksandFontFamily,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Button(
+                        onClick = { navController.navigate("leidingLogin") },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
+                    ) {
+                        Text(
+                            text = "Onderteken",
+                            fontFamily = quicksandFontFamily,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
                     }
                 }
             }
         }
+        AsyncImage(
+            model = badge?.image_url,
+            contentDescription = "badge icon",
+            modifier = Modifier.size(200.dp),
+        )
+        AsyncImage(
+            model = badge?.image_url,
+            contentDescription = "badge icon",
+            modifier = Modifier.size(200.dp),
+        )
     }
 }
 
