@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TeervoetPuntjesApp</string>
+    <string name="Home">Home</string>
+    <string name="Login">Login</string>
+    <string name="Badge_details_title">Badge Details</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.teervoetpuntjesapp.pages
+package com.example.teervoetpuntjesapp.ui.badge
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +28,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.teervoetpuntjesapp.Model.Badge
+import com.example.teervoetpuntjesapp.R
 import com.example.teervoetpuntjesapp.componenten.PuntjesKaart
 import com.example.teervoetpuntjesapp.data.AppViewModel
+import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
+
+object BadgeDetailsDestination : NavigationDestination {
+    override val route = "badge_detail"
+    override val titleRes = R.string.Badge_details_title
+}
 
 @Composable
 fun BadgePagina(

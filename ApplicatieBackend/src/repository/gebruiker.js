@@ -16,11 +16,12 @@ const findAll = async () => {
   return gebruikers;
 }
 
-const findByEmail = async (email) => {
+const findByEmail = async (email,password) => {
   const gebruiker = await getKnex()(tables.gebruiker)
     .select(SELECT_COLUMNS)
     .from(tables.gebruiker)
     .where('email', email)
+    .andWhere('password', password)
     .first();
   return gebruiker;
 }

@@ -1,4 +1,4 @@
-package com.example.teervoetpuntjesapp.pages
+package com.example.teervoetpuntjesapp.ui.login
 
 import android.os.Build
 import android.widget.Toast
@@ -46,9 +46,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.teervoetpuntjesapp.Model.Credentials
 import com.example.teervoetpuntjesapp.Model.Gebruiker
+import com.example.teervoetpuntjesapp.R
 import com.example.teervoetpuntjesapp.data.AppViewModel
+import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 import java.lang.Exception
+
+object LoginDestination : NavigationDestination {
+    override val route = "login"
+    override val titleRes = R.string.Login
+}
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
@@ -75,7 +82,7 @@ fun LoginForm(
             PasswordField(
                 value = credentials.pwd,
                 onChange = { data -> credentials = credentials.copy(pwd = data) },
-                submit = { 
+                submit = {
                     if (checkCredentials(credentials, gebruikers, viewModel) == true) {
                         navController.navigate("home")
                     } else {

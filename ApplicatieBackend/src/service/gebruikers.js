@@ -12,9 +12,9 @@ const getAll = async () => {
   return await gebruikerRepo.findAll();
 }
 
-const getByEmail = async (email) => {
+const getByEmail = async (email, password) => {
   debugLog(`Getting gebruiker with email: ${email}`);
-  const gebruiker = await gebruikerRepo.findByEmail(email);
+  const gebruiker = await gebruikerRepo.findByEmail(email,password);
   if (!gebruiker) {
     throw ServiceError(`Gebruiker with id ${id} not found`);
   }

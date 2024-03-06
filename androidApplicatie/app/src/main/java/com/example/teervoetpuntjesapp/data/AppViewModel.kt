@@ -15,6 +15,9 @@ import com.example.teervoetpuntjesapp.Model.Badge
 import com.example.teervoetpuntjesapp.Model.Gebruiker
 import com.example.teervoetpuntjesapp.Model.Puntje
 import com.example.teervoetpuntjesapp.TeervoetApplicatie
+import com.example.teervoetpuntjesapp.data.badge.BadgeRepository
+import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerRepository
+import com.example.teervoetpuntjesapp.data.puntje.PuntjesRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -53,7 +56,7 @@ class AppViewModel(
             }
         }
     }
-    
+
     fun getPuntjes() {
         viewModelScope.launch {
             try {
@@ -90,10 +93,10 @@ class AppViewModel(
     }
 
 
-    
+
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun persistPuntjes() {
-        viewModelScope.launch { 
+        viewModelScope.launch {
             try {
                 huidigeGebruiker.value?.let { gebruikerRepository.addPuntjes(it.id, behaaldePuntjes.toList()) }
             } catch (e: IOException) {

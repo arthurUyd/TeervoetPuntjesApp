@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Puntje(
     val id: Int,
     val titel: String,
-    val badge_id: Int
+    val badge_id: Int,
 )

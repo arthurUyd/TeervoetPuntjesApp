@@ -27,8 +27,8 @@ import androidx.navigation.NavController
 import com.example.teervoetpuntjesapp.Model.Credentials
 import com.example.teervoetpuntjesapp.Model.Gebruiker
 import com.example.teervoetpuntjesapp.data.AppViewModel
-import com.example.teervoetpuntjesapp.pages.LoginField
-import com.example.teervoetpuntjesapp.pages.PasswordField
+import com.example.teervoetpuntjesapp.ui.login.LoginField
+import com.example.teervoetpuntjesapp.ui.login.PasswordField
 import java.lang.Exception
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)

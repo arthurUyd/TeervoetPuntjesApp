@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Badge(
     val id: Int,
     val titel: String,
-    val image_url: String
+    val image_url: String,
 )

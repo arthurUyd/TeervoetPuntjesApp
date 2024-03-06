@@ -13,20 +13,28 @@ interface ApiService {
     @GET("badges")
     suspend fun getBadges(): List<Badge>
 
+    @GET("gebruikers/puntjes/{id}")
+    suspend fun getGebruikerPuntjes(
+        @Path("id") id: Int,
+    ): List<Int>
+
     @GET("puntjes")
     suspend fun getPuntjes(): List<Puntje>
-    
-    @GET("gebruikers")
-    suspend fun getGebruikers(): List<Gebruiker>
-    
+
     @GET("gebruikers/{email}")
     suspend fun getGebruikerByEmail(
         @Path("email") email: String,
+        @Body password: String,
     ): Gebruiker
 
     @POST("gebruikers")
     suspend fun insertGebruiker(@Body gebruiker: Gebruiker)
 
-    @POST("gebruikers/{id}/puntjes")
-    suspend fun addPuntjes(@Path("id") id: Int, @Body puntjesIds: List<Int>)
+    @POST("gebruikers/puntjes/{id}")
+    suspend fun addGebruikerPuntjes(
+        @Path("id") id: Int,
+        @Body puntjesIds: List<Int>,
+    )
+
+
 }

@@ -9,13 +9,11 @@ const getAllGebruikers = async (ctx) => {
 getAllGebruikers.validationScheme = null;
 
 const getGebruikerByEmail = async (ctx) => {
-  
-  const gebruiker = await gebruikersService.getByEmail(ctx.params.email);
-  const puntjes = await gebruikersService.getPuntjesById(await gebruiker.id);
+  const gebruiker = await gebruikersService.getByEmail(ctx.params.email, ctx.request.body.password);
   ctx.body = {
-    ...gebruiker,
-    puntjes
+    ...gebruiker
   };
+  ctx.status = 201;
 }
 getGebruikerByEmail.validationScheme = {
   params: {
@@ -36,6 +34,17 @@ createGebruiker.validationScheme = {
     password: Joi.string().required(),
   }
 };
+
+const getPuntjesById = async (ctx) => {
+  const puntjes = await gebruikersService.getPuntjesById(ctx.params.id);
+  ctx.body = puntjes;
+  ctx.status = 201;
+}
+getPuntjesById.validationScheme = {
+  params: {
+    id: Joi.number().required(),
+  },
+}
 
 const addPuntjes = async (ctx) => {
   console.log(ctx.request.body);
@@ -62,6 +71,7 @@ module.exports = (app) => {
   router.get('/', validation(getAllGebruikers.validationScheme), getAllGebruikers);
   router.get('/:email', validation(getGebruikerByEmail.validationScheme), getGebruikerByEmail);
   router.post('/', validation(createGebruiker.validationScheme), createGebruiker);
-  router.post('/:id/puntjes', validation(addPuntjes.validationScheme), addPuntjes);
+  router.post('/puntjes/:id', validation(addPuntjes.validationScheme), addPuntjes);
+  router.get('/puntjes/:id', validation(getPuntjesById.validationScheme), getPuntjesById);
   app.use(router.routes()).use(router.allowedMethods());
 }
