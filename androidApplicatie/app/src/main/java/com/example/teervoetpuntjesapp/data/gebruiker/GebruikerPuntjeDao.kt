@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface GebruikerPuntjeDao {
 
     @Query("select * from puntjes inner join gebruiker_puntje on puntjes.id == gebruiker_puntje.puntId where gebruiker_puntje.gebruikerId = :gebruikerId")
-    suspend fun getGebruikerPuntjes(gebruikerId: Int): Flow<List<PuntjeEntity>>
+    suspend fun getGebruikerPuntjes(gebruikerId: Int): Flow<List<Gebruiker_PuntjeEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addPuntje(gebruikersPuntjes: Gebruiker_PuntjeEntity)

@@ -1,6 +1,7 @@
 package com.example.teervoetpuntjesapp.data.gebruiker
 
 import com.example.teervoetpuntjesapp.Model.Gebruiker
+import com.example.teervoetpuntjesapp.Model.Gebruiker_puntje
 import kotlinx.coroutines.flow.Flow
 
 interface GebruikerRepository {
@@ -11,6 +12,6 @@ interface GebruikerRepository {
 //    suspend fun postGebruiker(gebruiker: Gebruiker)
     suspend fun addPuntjes(id: Int, lijst: List<Int>)
 
-    suspend fun getPuntjes(id: Int): Flow<List<Int>>
+    suspend fun getGebruikerPuntjes(id: Int): Flow<List<Gebruiker_puntje>>
 }
 

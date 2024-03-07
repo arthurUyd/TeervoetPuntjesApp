@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.teervoetpuntjesapp.data.badge.BadgeRepository
 import com.example.teervoetpuntjesapp.data.badge.OfflineFirstBadgeRepository
 import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerRepository
-import com.example.teervoetpuntjesapp.data.gebruiker.NetworkGebruikerRepository
 import com.example.teervoetpuntjesapp.data.gebruiker.OfflineFirstGebruikerRepository
 import com.example.teervoetpuntjesapp.data.puntje.OfflineFirstPuntjesRepository
 import com.example.teervoetpuntjesapp.data.puntje.PuntjesRepository
@@ -15,11 +14,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
 interface AppContainer {
-
-    val gebruikerNetworkRepository: GebruikerRepository
+    val gebruikerRepository: GebruikerRepository
     val badgeRepository: BadgeRepository
     val puntjesRepository: PuntjesRepository
-    val gebruikerLocalRepository: GebruikerRepository
 }
 
 class DefaultAppContainer(
@@ -37,18 +34,17 @@ class DefaultAppContainer(
         retrofit.create(ApiService::class.java)
     }
 
-
-    override val gebruikerNetworkRepository: GebruikerRepository by lazy {
-        NetworkGebruikerRepository(teervoetRetrofitService)
-    }
-
     override val badgeRepository: BadgeRepository by lazy {
-        OfflineFirstBadgeRepository(TeervoetAppDatabase.getDatabase(context).badgeDao(),teervoetRetrofitService)
+        OfflineFirstBadgeRepository(TeervoetAppDatabase.getDatabase(context).badgeDao(), teervoetRetrofitService)
     }
     override val puntjesRepository: PuntjesRepository by lazy {
         OfflineFirstPuntjesRepository(TeervoetAppDatabase.getDatabase(context).puntjeDao(), teervoetRetrofitService)
     }
-    override val gebruikerLocalRepository: GebruikerRepository by lazy {
-        OfflineFirstGebruikerRepository(TeervoetAppDatabase.getDatabase(context).gebruikerDao())
+    override val gebruikerRepository: GebruikerRepository by lazy {
+        OfflineFirstGebruikerRepository(
+            TeervoetAppDatabase.getDatabase(context).gebruikerDao(),
+            TeervoetAppDatabase.getDatabase(context).gebruikerPuntjeDao(),
+            teervoetRetrofitService,
+        )
     }
 }

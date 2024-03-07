@@ -11,6 +11,7 @@ import com.example.teervoetpuntjesapp.Model.Puntje
 import com.example.teervoetpuntjesapp.data.badge.BadgeDao
 import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
 import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerDao
+import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerPuntjeDao
 import com.example.teervoetpuntjesapp.data.puntje.PuntjeDao
 import com.example.teervoetpuntjesapp.data.puntje.PuntjeEntity
 
@@ -19,6 +20,7 @@ abstract class TeervoetAppDatabase : RoomDatabase() {
     abstract fun badgeDao(): BadgeDao
     abstract fun gebruikerDao(): GebruikerDao
     abstract fun puntjeDao(): PuntjeDao
+    abstract fun gebruikerPuntjeDao(): GebruikerPuntjeDao
 
     companion object {
         @Volatile

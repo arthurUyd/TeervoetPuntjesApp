@@ -4,9 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.teervoetpuntjesapp.Model.Gebruiker
-import com.example.teervoetpuntjesapp.Model.Gebruiker_puntje
-import com.example.teervoetpuntjesapp.data.puntje.PuntjeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,5 +16,4 @@ interface GebruikerDao {
 
     @Query("select * from gebruikers order by id desc")
     fun getAllGebruikers(): Flow<List<GebruikerEntity>>
-
 }

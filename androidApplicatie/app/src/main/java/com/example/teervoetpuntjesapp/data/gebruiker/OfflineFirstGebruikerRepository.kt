@@ -1,6 +1,7 @@
 package com.example.teervoetpuntjesapp.data.gebruiker
 
 import com.example.teervoetpuntjesapp.Model.Gebruiker
+import com.example.teervoetpuntjesapp.Model.Gebruiker_puntje
 import com.example.teervoetpuntjesapp.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -31,10 +32,29 @@ class OfflineFirstGebruikerRepository(
 
 //    override suspend fun postGebruiker(gebruiker: Gebruiker) = gebruikerDao.insert(gebruiker)
     override suspend fun addPuntjes(id: Int, lijst: List<Int>) {
-        TODO("Not yet implemented")
+        lijst.forEach { puntje ->
+            gpDao.addPuntje(Gebruiker_PuntjeEntity(id, puntje))
+        }.also {
+            api.addGebruikerPuntjes(id, lijst)
+        }
     }
 
-    override suspend fun getPuntjes(id: Int): Flow<List<Int>> {
-        TODO("Not yet implemented")
+    override suspend fun getGebruikerPuntjes(id: Int): Flow<List<Gebruiker_puntje>> {
+        return gpDao.getGebruikerPuntjes(id).map { puntjes ->
+            puntjes.map(Gebruiker_PuntjeEntity::asDomainGP)
+        }.onEach {
+            if (it.isEmpty()){
+                refreshGP(id)
+            }
+        }
+    }
+
+
+
+    suspend fun refreshGP(id: Int){
+        api.getGebruikerPuntjes(id)
+            .also {
+                addPuntjes(id, it)
+            }
     }
 }
