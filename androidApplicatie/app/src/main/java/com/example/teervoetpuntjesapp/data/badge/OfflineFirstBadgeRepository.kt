@@ -10,7 +10,7 @@ class OfflineFirstBadgeRepository(
     private val badgeDao: BadgeDao,
     private val api: ApiService,
 ) : BadgeRepository {
-    override suspend fun getBadges(): Flow<List<Badge>> {
+    override fun getBadges(): Flow<List<Badge>> {
         return badgeDao.getAllBadges().map { badges ->
             badges.map(BadgeEntity::asDomainBadge)
         }.onEach {
@@ -20,7 +20,7 @@ class OfflineFirstBadgeRepository(
         }
     }
 
-    suspend fun refreshBadges() {
+    override suspend fun refreshBadges() {
         api.getBadges()
             .also { badges ->
                 badgeDao.insert(badges.map(Badge::asBadgeEntity))

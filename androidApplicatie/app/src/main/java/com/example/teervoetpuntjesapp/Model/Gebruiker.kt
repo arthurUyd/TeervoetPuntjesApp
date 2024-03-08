@@ -1,11 +1,8 @@
 package com.example.teervoetpuntjesapp.Model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-
 data class Gebruiker(
     val id: Int,
     val naam: String,

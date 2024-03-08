@@ -2,8 +2,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.teervoetpuntjesapp.data.TeervoetAppDatabase
-import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerDao
-import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerEntity
+import com.example.teervoetpuntjesapp.data.badge.BadgeDao
+import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -13,13 +13,14 @@ import org.junit.Test
 import java.io.IOException
 import kotlin.jvm.Throws
 
-class GebruikerDaoTest {
+class BadgeDaoTest {
 
-    private lateinit var gebruikerDao: GebruikerDao
+    private lateinit var badgeDao: BadgeDao
     private lateinit var teervoetAppDatabase: TeervoetAppDatabase
 
-    private var gebruiker1 = GebruikerEntity(1, "thomas", "thomas@gmail.com", "qhbf", 0)
-    private var gebruiker2 = GebruikerEntity(1, "emma", "emma@gmail.com", "qhbf", 0)
+    private var badge1 = BadgeEntity(1, "1", "1")
+    private var badge2 = BadgeEntity(2, "2", "2")
+    private var badge3 = BadgeEntity(3, "3", "3")
 
     @Before
     fun createDb() {
@@ -28,15 +29,15 @@ class GebruikerDaoTest {
         teervoetAppDatabase = Room.inMemoryDatabaseBuilder(context, TeervoetAppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        gebruikerDao = teervoetAppDatabase.gebruikerDao()
+        badgeDao = teervoetAppDatabase.badgeDao()
     }
 
-    private suspend fun voegEenGebruikerToe() {
-        gebruikerDao.insert(gebruiker1)
+    private suspend fun voegBadgeToe() {
+        badgeDao.insert(listOf(badge1))
     }
-    private suspend fun voegTweeGebruikersToe() {
-        gebruikerDao.insert(gebruiker1)
-        gebruikerDao.insert(gebruiker2)
+
+    private suspend fun voegMeerdereBadgesToe() {
+        badgeDao.insert(listOf(badge1, badge3, badge2))
     }
 
     @After
@@ -47,9 +48,9 @@ class GebruikerDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun daoInsert_insertGebruikerIntoDb() = runBlocking {
-        voegEenGebruikerToe()
-        val allItems = gebruikerDao.getAllGebruikers().first()
-        assertEquals(allItems[0], gebruiker1)
+    fun daoInsert_insertBadgeIntoDb() = runBlocking {
+        voegBadgeToe()
+        val allitems = badgeDao.getAllBadges().first()
+        assertEquals(allitems[0], badge1)
     }
 }
