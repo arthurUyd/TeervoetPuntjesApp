@@ -14,6 +14,6 @@ interface GebruikerDao {
     @Query("select * from gebruikers where email = :email and password = :password")
     fun getGebruiker(email: String, password: String): Flow<GebruikerEntity>
 
-    @Query("select * from gebruikers order by id desc")
+    @Query("select * from gebruikers order by id asc")
     fun getAllGebruikers(): Flow<List<GebruikerEntity>>
 }

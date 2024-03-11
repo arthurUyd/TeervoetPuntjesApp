@@ -19,7 +19,7 @@ class GebruikerDaoTest {
     private lateinit var teervoetAppDatabase: TeervoetAppDatabase
 
     private var gebruiker1 = GebruikerEntity(1, "thomas", "thomas@gmail.com", "qhbf", 0)
-    private var gebruiker2 = GebruikerEntity(1, "emma", "emma@gmail.com", "qhbf", 0)
+    private var gebruiker2 = GebruikerEntity(2, "emma", "emma@gmail.com", "qhbf", 0)
 
     @Before
     fun createDb() {
@@ -42,6 +42,7 @@ class GebruikerDaoTest {
     @After
     @Throws(IOException::class)
     fun closeDb() {
+        teervoetAppDatabase.clearAllTables()
         teervoetAppDatabase.close()
     }
 
@@ -51,5 +52,23 @@ class GebruikerDaoTest {
         voegEenGebruikerToe()
         val allItems = gebruikerDao.getAllGebruikers().first()
         assertEquals(allItems[0], gebruiker1)
+    }
+    @Test
+    @Throws(Exception::class)
+    fun daoInsert_insertMeerdereGebruikersIntoDb() = runBlocking {
+        voegTweeGebruikersToe()
+        val allItems = gebruikerDao.getAllGebruikers().first()
+        assertEquals(allItems[0], gebruiker1)
+        assertEquals(allItems[1], gebruiker2)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun daoGet_haalGebruikerOp() = runBlocking {
+        voegTweeGebruikersToe()
+
+        val gebruiker = gebruikerDao.getGebruiker("emma@gmail.com", "qhbf").first()
+
+        assertEquals(gebruiker2, gebruiker)
     }
 }
