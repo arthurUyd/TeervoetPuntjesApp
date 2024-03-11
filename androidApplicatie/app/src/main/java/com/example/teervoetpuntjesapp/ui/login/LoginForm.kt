@@ -122,7 +122,7 @@ fun checkCredentials(creds: Credentials, gebruikers: List<Gebruiker>, viewModel:
             gebruiker.email.lowercase() == creds.login.lowercase()
         }.first()
         if (gebruiker.password == creds.pwd && creds.login.lowercase() == gebruiker.email.lowercase()) {
-            viewModel.setGebruiker(gebruiker)
+//            viewModel.setGebruiker(gebruiker)
             return true
         }
     } catch (e: Exception) {

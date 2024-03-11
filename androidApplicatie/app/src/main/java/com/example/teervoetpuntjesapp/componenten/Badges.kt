@@ -30,14 +30,12 @@ fun BadgeLijst(
     badges: List<Badge>,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: AppViewModel
 ) {
     LazyColumn(
         modifier = Modifier.padding(all = 14.dp).fillMaxSize(),
     ) {
         items(badges) {
             BadgeCard(badge = it, modifier = Modifier.padding(6.dp), onClick = {
-                viewModel.setBadge(it)
                 navController.navigate("puntjes/{badge}")
             })
         }

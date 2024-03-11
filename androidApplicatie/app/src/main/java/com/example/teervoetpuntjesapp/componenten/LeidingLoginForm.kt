@@ -36,7 +36,6 @@ import java.lang.Exception
 fun LeidingLoginForm(
     gebruikers: List<Gebruiker>,
     navController: NavController,
-    viewModel: AppViewModel,
 ) {
     Surface {
         var credentials by remember { mutableStateOf(Credentials()) }
@@ -58,7 +57,6 @@ fun LeidingLoginForm(
                 onChange = { data -> credentials = credentials.copy(pwd = data) },
                 submit = { 
                     if (checkLeidingCredentials(credentials, gebruikers) == true) {
-                        viewModel.persistPuntjes()
                         navController.navigate("home")
                     } else {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
@@ -70,7 +68,6 @@ fun LeidingLoginForm(
             Button(
                 onClick = {
                     if (checkLeidingCredentials(credentials, gebruikers) == true) {
-                        viewModel.persistPuntjes()
                         navController.navigate("home")
                     } else {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()

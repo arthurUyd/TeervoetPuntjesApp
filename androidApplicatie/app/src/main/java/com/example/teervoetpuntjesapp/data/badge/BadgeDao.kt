@@ -6,24 +6,22 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.teervoetpuntjesapp.Model.Badge
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BadgeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(badge: List<BadgeEntity>)
-    @Update
-    suspend fun update(badge: BadgeEntity)
 
-    @Delete
-    suspend fun delete(badge: BadgeEntity)
+//    @Update
+//    suspend fun update(badge: BadgeEntity)
+//
+//    @Delete
+//    suspend fun delete(badge: BadgeEntity)
 
-    @Query("select * from badges order by id desc")
+    @Query("select * from badges order by id asc")
     fun getAllBadges(): Flow<List<BadgeEntity>>
 
     @Query("select * from badges where id = :id")
     fun getBadge(id: Int): Flow<BadgeEntity>
-
-
 }

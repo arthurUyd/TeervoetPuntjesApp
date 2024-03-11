@@ -1,10 +1,12 @@
 import android.content.Context
+import androidx.compose.runtime.collectAsState
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.teervoetpuntjesapp.data.TeervoetAppDatabase
 import com.example.teervoetpuntjesapp.data.badge.BadgeDao
 import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -32,18 +34,18 @@ class BadgeDaoTest {
         badgeDao = teervoetAppDatabase.badgeDao()
     }
 
+    @After
+    @Throws(IOException::class)
+    fun closeDb() {
+        teervoetAppDatabase.clearAllTables()
+        teervoetAppDatabase.close()
+    }
     private suspend fun voegBadgeToe() {
         badgeDao.insert(listOf(badge1))
     }
 
     private suspend fun voegMeerdereBadgesToe() {
-        badgeDao.insert(listOf(badge1, badge3, badge2))
-    }
-
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
-        teervoetAppDatabase.close()
+        badgeDao.insert(listOf(badge1, badge2, badge3))
     }
 
     @Test
@@ -52,5 +54,26 @@ class BadgeDaoTest {
         voegBadgeToe()
         val allitems = badgeDao.getAllBadges().first()
         assertEquals(allitems[0], badge1)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun daoInsert_insertMultipleBadgesIntoDb() = runBlocking {
+        voegMeerdereBadgesToe()
+        val allItems = badgeDao.getAllBadges().first()
+
+        assertEquals(allItems[0], badge1)
+        assertEquals(allItems[1], badge2)
+        assertEquals(allItems[2], badge3)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun daoGet_getSpecificBadge() = runBlocking {
+        voegMeerdereBadgesToe()
+
+        val badge = badgeDao.getBadge(2).first()
+
+        assertEquals(badge2, badge)
     }
 }
