@@ -14,11 +14,11 @@ interface PuntjeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(puntje: List<PuntjeEntity>)
 
-    @Update
-    suspend fun update(puntje: PuntjeEntity)
-
-    @Delete
-    suspend fun delete(puntje: PuntjeEntity)
+//    @Update
+//    suspend fun update(puntje: PuntjeEntity)
+//
+//    @Delete
+//    suspend fun delete(puntje: PuntjeEntity)
 
     @Query("select * from puntjes where badge_id= :badge_id")
     fun getPuntjesVoorBadge(badge_id: Int): Flow<List<PuntjeEntity>>

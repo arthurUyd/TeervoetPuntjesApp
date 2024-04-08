@@ -28,7 +28,7 @@ import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 @Composable
 fun BadgeLijst(
     badges: List<Badge>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     navController: NavController,
 ) {
     LazyColumn(

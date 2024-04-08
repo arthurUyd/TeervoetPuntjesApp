@@ -19,7 +19,7 @@ fun BadgesNavHost(
 ) {
     NavHost(navController = navController, startDestination = HomeDestination.route, modifier = modifier) {
         composable(route = HomeDestination.route) {
-            HomeScreen()
+            HomeScreen(navController)
         }
 //        composable(route = LoginDestination.route) {
 //            LoginForm(gebruikers = a, navController = a, viewModel = a)

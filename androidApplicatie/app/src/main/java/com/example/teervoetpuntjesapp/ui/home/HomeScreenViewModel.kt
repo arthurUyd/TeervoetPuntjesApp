@@ -1,43 +1,83 @@
 package com.example.teervoetpuntjesapp.ui.home
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.teervoetpuntjesapp.Model.Badge
 import com.example.teervoetpuntjesapp.TeervoetApplicatie
+import com.example.teervoetpuntjesapp.core.Result
+import com.example.teervoetpuntjesapp.core.asResult
 import com.example.teervoetpuntjesapp.data.badge.BadgeRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.io.IOException
 
-class HomeScreenViewModel(private val badgeRepository: BadgeRepository) : ViewModel() {
+class HomeScreenViewModel(
+    private val badgeRepository: BadgeRepository,
+) : ViewModel() {
 
-    lateinit var uiBadgeListState: StateFlow<BadgeListState>
-    var badgeApiState: BadgeApiState by mutableStateOf(BadgeApiState.Loading)
-        private set
-
-    init {
-        getRepoBadges()
+    val exceptionHandler = CoroutineExceptionHandler { context, exception ->
+        viewModelScope.launch {
+            isError.emit(true)
+        }
     }
-    private fun getRepoBadges() {
-        try {
-            viewModelScope.launch { badgeRepository.refreshBadges() }
-            uiBadgeListState = badgeRepository.getBadges().map { BadgeListState(it) }
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5_000L),
-                    initialValue = BadgeListState(),
-                )
-            badgeApiState = BadgeApiState.Success
-        } catch (e: IOException) {
-            badgeApiState = BadgeApiState.Error
+
+    private val badges: Flow<Result<List<Badge>>> =
+        badgeRepository.getBadges().asResult()
+
+    private val isError = MutableStateFlow(false)
+    private val isRefreshing = MutableStateFlow(false)
+
+    val uiState: StateFlow<HomeScreenState> = combine(
+        badges,
+        isRefreshing,
+        isError,
+    ) { badgeResult, errorOccurred, refreshing ->
+        val badgestate: BadgeUiState = when (badgeResult) {
+            is Result.Success -> BadgeUiState.Success(badgeResult.data)
+            is Result.Loading -> BadgeUiState.Loading
+            is Result.Error -> BadgeUiState.Error
+        }
+        HomeScreenState(
+            badgestate,
+            refreshing,
+            errorOccurred,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = HomeScreenState(
+            BadgeUiState.Loading,
+            isRefreshing = false,
+            isError = false,
+        ),
+    )
+
+    fun onRefresh() {
+        viewModelScope.launch(exceptionHandler) {
+            with(badgeRepository) {
+                val refreshBadges = async { refreshBadges() }
+                isRefreshing.emit(true)
+                try {
+                    refreshBadges
+                } finally {
+                    isRefreshing.emit(false)
+                }
+            }
+        }
+    }
+
+    fun onErrorConsumed() {
+        viewModelScope.launch {
+            isError.emit(false)
         }
     }
 

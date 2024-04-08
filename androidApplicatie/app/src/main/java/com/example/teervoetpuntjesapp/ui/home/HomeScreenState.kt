@@ -1,13 +1,17 @@
 package com.example.teervoetpuntjesapp.ui.home
 
+import androidx.compose.runtime.Immutable
 import com.example.teervoetpuntjesapp.Model.Badge
 
-data class BadgeListState(
-    val badgeList: List<Badge> = listOf(),
-)
-
-sealed interface BadgeApiState {
-    object Success : BadgeApiState
-    object Error : BadgeApiState
-    object Loading : BadgeApiState
+@Immutable
+sealed interface BadgeUiState {
+    data class Success(val badges: List<Badge>) : BadgeUiState
+    object Error : BadgeUiState
+    object Loading : BadgeUiState
 }
+
+data class HomeScreenState(
+    val badges: BadgeUiState,
+    val isRefreshing: Boolean,
+    val isError: Boolean,
+)

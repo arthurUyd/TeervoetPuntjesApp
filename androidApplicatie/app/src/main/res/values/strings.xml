@@ -3,5 +3,8 @@
     <string name="Home">Home</string>
     <string name="Login">Login</string>
     <string name="Badge_details_title">Badge Details</string>
+    <string name="error_text">Check uw connectie of probeer later opnieuw.</string>
+    <string name="ok_button_text">OK</string>
+    <string name="loading_text">Aan het laden...</string>
 
 </resources>
