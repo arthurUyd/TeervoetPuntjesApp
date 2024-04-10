@@ -1,5 +1,6 @@
 package com.example.teervoetpuntjesapp.ui.home
 
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -35,12 +36,14 @@ class HomeScreenViewModel(
 
     private val isError = MutableStateFlow(false)
     private val isRefreshing = MutableStateFlow(false)
+    private val currentBadge = MutableStateFlow(0)
 
     val uiState: StateFlow<HomeScreenState> = combine(
         badges,
         isRefreshing,
         isError,
-    ) { badgeResult, errorOccurred, refreshing ->
+        currentBadge,
+    ) { badgeResult, errorOccurred, refreshing, badgeInt ->
         val badgestate: BadgeUiState = when (badgeResult) {
             is Result.Success -> BadgeUiState.Success(badgeResult.data)
             is Result.Loading -> BadgeUiState.Loading
@@ -50,6 +53,7 @@ class HomeScreenViewModel(
             badgestate,
             refreshing,
             errorOccurred,
+            badgeInt,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -58,8 +62,10 @@ class HomeScreenViewModel(
             BadgeUiState.Loading,
             isRefreshing = false,
             isError = false,
+            currentBadge = 0,
         ),
     )
+
 
     fun onRefresh() {
         viewModelScope.launch(exceptionHandler) {

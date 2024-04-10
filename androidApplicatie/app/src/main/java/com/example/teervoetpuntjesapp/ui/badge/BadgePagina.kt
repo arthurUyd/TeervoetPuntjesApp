@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.teervoetpuntjesapp.Model.Badge
@@ -38,8 +39,8 @@ object BadgeDetailsDestination : NavigationDestination {
 
 @Composable
 fun BadgePagina(
-    badge: Badge?,
-    navController: NavController,
+    badge: Badge,
+    viewModel: BadgePaginaViewModel = viewModel(factory = BadgePaginaViewModel.Factory)
 ) {
 //    val puntjes by viewModel.puntjes
 //

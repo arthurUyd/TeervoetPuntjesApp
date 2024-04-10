@@ -7,8 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.teervoetpuntjesapp.ui.badge.BadgeDetailsDestination
 import com.example.teervoetpuntjesapp.ui.badge.BadgePagina
-import com.example.teervoetpuntjesapp.ui.login.LoginDestination
-import com.example.teervoetpuntjesapp.ui.login.LoginForm
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeDestination
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeScreen
 
@@ -17,15 +15,20 @@ fun BadgesNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    NavHost(navController = navController, startDestination = HomeDestination.route, modifier = modifier) {
+
+    NavHost(
+        navController = navController,
+        startDestination = HomeDestination.route,
+        modifier = modifier,
+    ) {
         composable(route = HomeDestination.route) {
-            HomeScreen(navController)
+            HomeScreen(badgePress = {navController.navigate("")})
         }
 //        composable(route = LoginDestination.route) {
 //            LoginForm(gebruikers = a, navController = a, viewModel = a)
 //        }
-//        composable(route = BadgeDetailsDestination.route) {
-//            BadgePagina(badge = , viewModel = , navController = )
-//        }
+        composable(route = BadgeDetailsDestination.route) {
+            BadgePagina()
+        }
     }
 }

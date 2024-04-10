@@ -14,4 +14,5 @@ data class HomeScreenState(
     val badges: BadgeUiState,
     val isRefreshing: Boolean,
     val isError: Boolean,
+    val currentBadge: Int = 0
 )
