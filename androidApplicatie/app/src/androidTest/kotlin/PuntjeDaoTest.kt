@@ -2,6 +2,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.teervoetpuntjesapp.data.TeervoetAppDatabase
+import com.example.teervoetpuntjesapp.data.badge.BadgeDao
+import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
 import com.example.teervoetpuntjesapp.data.puntje.PuntjeDao
 import com.example.teervoetpuntjesapp.data.puntje.PuntjeEntity
 import kotlinx.coroutines.flow.first
@@ -17,9 +19,11 @@ class PuntjeDaoTest {
 
     private lateinit var puntjeDao: PuntjeDao
     private lateinit var teervoetAppDatabase: TeervoetAppDatabase
-
-    private var puntje1 = PuntjeEntity(1, "", 3)
-    private var puntje2 = PuntjeEntity(2, "", 3)
+    private lateinit var badgeDao: BadgeDao
+    private var badge1 = BadgeEntity(1, "1", "1")
+    private var badge2 = BadgeEntity(2, "2", "2")
+    private var puntje1 = PuntjeEntity(1, "", 1)
+    private var puntje2 = PuntjeEntity(2, "", 2)
     private var puntje3 = PuntjeEntity(3, "", 2)
 
     @Before
@@ -30,6 +34,7 @@ class PuntjeDaoTest {
             .allowMainThreadQueries()
             .build()
         puntjeDao = teervoetAppDatabase.puntjeDao()
+        badgeDao = teervoetAppDatabase.badgeDao()
     }
 
     @After
@@ -39,8 +44,14 @@ class PuntjeDaoTest {
         teervoetAppDatabase.close()
     }
 
-    private suspend fun voegPuntjeToe() = puntjeDao.insert(listOf(puntje1))
-    private suspend fun voegMeerderePuntjesToe() = puntjeDao.insert(listOf(puntje1, puntje2, puntje3))
+    private suspend fun voegPuntjeToe() {
+        badgeDao.insert(listOf(badge1))
+        puntjeDao.insert(listOf(puntje1))
+    }
+    private suspend fun voegMeerderePuntjesToe() {
+        badgeDao.insert(listOf(badge1, badge2))
+        puntjeDao.insert(listOf(puntje1, puntje2, puntje3))
+    }
 
     @Test
     @Throws(Exception::class)
@@ -65,9 +76,9 @@ class PuntjeDaoTest {
     fun daoGet_getPuntjesForBadge() = runBlocking {
         voegMeerderePuntjesToe()
 
-        val puntjes = puntjeDao.getPuntjesVoorBadge(3).first()
+        val puntjes = puntjeDao.getPuntjesVoorBadge(2).first()
 
-        assertEquals(puntje1, puntjes[0])
-        assertEquals(puntje2, puntjes[1])
+        assertEquals(puntje2, puntjes[0])
+        assertEquals(puntje3, puntjes[1])
     }
 }

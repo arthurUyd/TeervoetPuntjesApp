@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.example.teervoetpuntjesapp.data.TeervoetAppDatabase
 import com.example.teervoetpuntjesapp.data.badge.BadgeDao
 import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
+import com.example.teervoetpuntjesapp.data.badge.OfflineFirstBadgeRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -19,7 +20,6 @@ class BadgeDaoTest {
 
     private lateinit var badgeDao: BadgeDao
     private lateinit var teervoetAppDatabase: TeervoetAppDatabase
-
     private var badge1 = BadgeEntity(1, "1", "1")
     private var badge2 = BadgeEntity(2, "2", "2")
     private var badge3 = BadgeEntity(3, "3", "3")
@@ -75,5 +75,11 @@ class BadgeDaoTest {
         val badge = badgeDao.getBadge(2).first()
 
         assertEquals(badge2, badge)
+    }
+
+    @Test
+    @Throws(Exception:: class)
+    fun networkGet_getAllBadges() = runBlocking {
+
     }
 }
