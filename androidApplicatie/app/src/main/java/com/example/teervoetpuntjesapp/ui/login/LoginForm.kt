@@ -1,8 +1,6 @@
 package com.example.teervoetpuntjesapp.ui.login
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,26 +41,21 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.teervoetpuntjesapp.Model.Credentials
-import com.example.teervoetpuntjesapp.Model.Gebruiker
 import com.example.teervoetpuntjesapp.R
-import com.example.teervoetpuntjesapp.data.AppViewModel
 import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
-import java.lang.Exception
+import kotlin.Exception
 
 object LoginDestination : NavigationDestination {
     override val route = "login"
     override val titleRes = R.string.Login
 }
 
-@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun LoginForm(
-    gebruikers: List<Gebruiker>,
-    navController: NavController,
-    viewModel: AppViewModel,
+    viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory),
 ) {
     Surface {
         var credentials by remember { mutableStateOf(Credentials()) }
@@ -83,25 +76,20 @@ fun LoginForm(
                 value = credentials.pwd,
                 onChange = { data -> credentials = credentials.copy(pwd = data) },
                 submit = {
-                    if (checkCredentials(credentials, gebruikers, viewModel) == true) {
-                        navController.navigate("home")
-                    } else {
+                    try {
+                        viewModel.setGebruiker(credentials.login, credentials.pwd)
+                    } catch (e: Exception) {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
             )
-//            LabeledCheckbox(
-//                label = "Remember me",
-//                onCheckedChanged = { credentials = credentials.copy(remember = !credentials.remember) },
-//                isChecked = credentials.remember,
-//            )
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    if (checkCredentials(credentials, gebruikers, viewModel) == true) {
-                        navController.navigate("home")
-                    } else {
+                    try {
+                        viewModel.setGebruiker(credentials.login, credentials.pwd)
+                    } catch (e: Exception) {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
                     }
                 },
@@ -114,40 +102,6 @@ fun LoginForm(
         }
     }
 }
-
-@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-fun checkCredentials(creds: Credentials, gebruikers: List<Gebruiker>, viewModel: AppViewModel): Boolean {
-    try {
-        var gebruiker = gebruikers.filter { gebruiker ->
-            gebruiker.email.lowercase() == creds.login.lowercase()
-        }.first()
-        if (gebruiker.password == creds.pwd && creds.login.lowercase() == gebruiker.email.lowercase()) {
-//            viewModel.setGebruiker(gebruiker)
-            return true
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return false
-    }
-    return false
-}
-
-// @Composable
-// fun LabeledCheckbox(
-//    label: String,
-//    onCheckedChanged: () -> Unit,
-//    isChecked: Boolean,
-// ) {
-//    Row(
-//        modifier = Modifier.clickable(
-//            onClick = onCheckedChanged,
-//        ).padding(4.dp),
-//    ) {
-//        Checkbox(checked = isChecked, onCheckedChange = null)
-//        Spacer(modifier = Modifier.size(6.dp))
-//        Text(text = label)
-//    }
-// }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -20,6 +20,16 @@ class OfflineFirstBadgeRepository(
         }
     }
 
+    override fun getBadge(id: Int): Flow<Badge> {
+        return badgeDao.getBadge(id).map {
+            it.asDomainBadge()
+        }.onEach {
+            if (it == null){
+                refreshBadges()
+            }
+        }
+    }
+
     override suspend fun refreshBadges() {
         api.getBadges()
             .also { badges ->

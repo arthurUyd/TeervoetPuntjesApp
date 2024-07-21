@@ -30,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.teervoetpuntjesapp.Model.Badge
 import com.example.teervoetpuntjesapp.R
@@ -48,7 +47,6 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory),
-    navController: NavController,
     modifier: Modifier = Modifier,
     badgePress: (Int) -> Unit,
 ) {
@@ -63,7 +61,7 @@ fun HomeScreen(
         when (uiState.badges) {
             is BadgeUiState.Loading -> Text(stringResource(id = R.string.loading_text))
             is BadgeUiState.Error -> Text(text = stringResource(id = R.string.error_text))
-            is BadgeUiState.Success -> BadgeLijst(uiState = uiState.badges, modifier = modifier, onPress = {id -> badgePress(id)})
+            is BadgeUiState.Success -> BadgeLijst(uiState = uiState.badges, modifier = modifier, onPress = { id -> badgePress(id) })
             else -> Text("")
         }
     }

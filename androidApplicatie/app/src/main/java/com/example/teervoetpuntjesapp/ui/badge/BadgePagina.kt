@@ -18,16 +18,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.teervoetpuntjesapp.Model.Badge
 import com.example.teervoetpuntjesapp.R
 import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
@@ -39,12 +40,14 @@ object BadgeDetailsDestination : NavigationDestination {
 
 @Composable
 fun BadgePagina(
-    badge: Badge,
-    viewModel: BadgePaginaViewModel = viewModel(factory = BadgePaginaViewModel.Factory)
+    badgeId: Int = 1,
+    viewModel: BadgePaginaViewModel = viewModel(factory = BadgePaginaViewModel.Factory),
 ) {
-//    val puntjes by viewModel.puntjes
-//
-//    var filteredPuntjes = puntjes.filter { it.badge_id == badge?.id ?: null }
+    val badge by viewModel.badge.collectAsState()
+
+    LaunchedEffect(badge) {
+        viewModel.getBadge(badgeId)
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,7 +56,7 @@ fun BadgePagina(
             .verticalScroll(rememberScrollState()).fillMaxSize(),
     ) {
         AsyncImage(
-            model = badge?.image_url,
+            model = badge.image_url,
             contentDescription = "badge icon",
             modifier = Modifier.size(200.dp),
         )
@@ -95,7 +98,7 @@ fun BadgePagina(
                 Button(
                     onClick = {
 //                            viewModel.behaaldePuntjes.clear()
-                        navController.navigate("home")
+                        // {TODO}
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -111,7 +114,8 @@ fun BadgePagina(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    onClick = { navController.navigate("leidingLogin") },
+                    onClick = { // {TODO}
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,

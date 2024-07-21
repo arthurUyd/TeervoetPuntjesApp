@@ -64,6 +64,7 @@ async function initializeData() {
   
   // Check the connection, create the database and then reconnect
   try {
+    
     await knexInstance.raw('SELECT 1+1 AS result');
     // await knexInstance.raw(`DROP DATABASE IF EXISTS ${DATABASE_NAME}`);
     await knexInstance.raw(`CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME}`);

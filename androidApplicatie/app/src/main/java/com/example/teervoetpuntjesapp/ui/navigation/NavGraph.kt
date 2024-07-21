@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.teervoetpuntjesapp.ui.badge.BadgeDetailsDestination
 import com.example.teervoetpuntjesapp.ui.badge.BadgePagina
+import com.example.teervoetpuntjesapp.ui.login.LoginDestination
+import com.example.teervoetpuntjesapp.ui.login.LoginForm
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeDestination
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeScreen
 
@@ -15,20 +17,20 @@ fun BadgesNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-
     NavHost(
         navController = navController,
-        startDestination = HomeDestination.route,
+        startDestination = LoginDestination.route,
         modifier = modifier,
     ) {
         composable(route = HomeDestination.route) {
-            HomeScreen(badgePress = {navController.navigate("")})
+            HomeScreen(badgePress = { id -> navController.navigate(BadgeDetailsDestination.route + "/$id") })
         }
-//        composable(route = LoginDestination.route) {
-//            LoginForm(gebruikers = a, navController = a, viewModel = a)
-//        }
-        composable(route = BadgeDetailsDestination.route) {
-            BadgePagina()
+        composable(route = LoginDestination.route) {
+            LoginForm()
+        }
+        composable(route = BadgeDetailsDestination.route + "/{badge_id}") {
+                backStackEntry ->
+            backStackEntry.arguments?.getInt("badge_id")?.let { BadgePagina(badgeId = it) }
         }
     }
 }
