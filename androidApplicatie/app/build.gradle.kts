@@ -74,6 +74,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
 
     val room_version = "2.5.0"

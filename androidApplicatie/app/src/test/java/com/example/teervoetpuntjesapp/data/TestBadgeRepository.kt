@@ -12,6 +12,9 @@ class TestBadgeRepository : BadgeRepository {
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     override fun getBadges(): Flow<List<Badge>> = badgeFlow
+    override fun getBadge(id: Int): Flow<Badge> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun refreshBadges() {
         //no implementation

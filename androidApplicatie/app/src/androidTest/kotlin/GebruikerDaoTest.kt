@@ -2,7 +2,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.teervoetpuntjesapp.data.TeervoetAppDatabase
-import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerDao
 import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

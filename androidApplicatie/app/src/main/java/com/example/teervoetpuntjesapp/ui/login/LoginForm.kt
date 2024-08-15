@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +48,6 @@ import com.example.teervoetpuntjesapp.R
 import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 import kotlin.Exception
-
 object LoginDestination : NavigationDestination {
     override val route = "login"
     override val titleRes = R.string.Login
@@ -55,11 +55,14 @@ object LoginDestination : NavigationDestination {
 
 @Composable
 fun LoginForm(
-    viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory),
+    loginSuccess: () -> Unit,
 ) {
+    var viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
+    val context = LocalContext.current
+    val loginResult by viewModel.loginResult.collectAsState()
+
     Surface {
         var credentials by remember { mutableStateOf(Credentials()) }
-        val context = LocalContext.current
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -67,19 +70,22 @@ fun LoginForm(
             modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp),
         ) {
             LoginField(
-                value = credentials.login,
-                onChange = { data -> credentials = credentials.copy(login = data) },
+                value = credentials.email,
+                onChange = { data -> credentials = credentials.copy(email = data) },
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(10.dp))
             PasswordField(
-                value = credentials.pwd,
-                onChange = { data -> credentials = credentials.copy(pwd = data) },
+                value = credentials.password,
+                onChange = { data -> credentials = credentials.copy(password = data) },
                 submit = {
                     try {
-                        viewModel.setGebruiker(credentials.login, credentials.pwd)
+                        viewModel.login(credentials.email, credentials.password)
                     } catch (e: Exception) {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
+                    }
+                    if (loginResult is LoginResult.Success) {
+                        loginSuccess()
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -88,9 +94,12 @@ fun LoginForm(
             Button(
                 onClick = {
                     try {
-                        viewModel.setGebruiker(credentials.login, credentials.pwd)
+                        viewModel.login(credentials.email, credentials.password)
                     } catch (e: Exception) {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
+                    }
+                    if (loginResult is LoginResult.Success) {
+                        loginSuccess()
                     }
                 },
                 enabled = credentials.isNotEmpty(),

@@ -6,5 +6,12 @@
     <string name="error_text">Check uw connectie of probeer later opnieuw.</string>
     <string name="ok_button_text">OK</string>
     <string name="loading_text">Aan het laden...</string>
+    <string name="loading">Loading...\n</string>
+    <string name="connection_error_image">Failed to connect</string>
+    <string name="loading_failed">Failed to Load</string>
+    <string name="retry">Retry</string>
+    <string name="fos">FOS</string>
+    <string name="login">login</string>
+    <string name="logout">Logout</string>
 
 </resources>

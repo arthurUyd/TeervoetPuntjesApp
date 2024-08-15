@@ -1,11 +1,14 @@
 package com.example.teervoetpuntjesapp.Model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Credentials(
-    var login: String = "",
-    var pwd: String = "",
+    var email: String = "",
+    var password: String = "",
     // var remember: Boolean = false
 ) {
     fun isNotEmpty(): Boolean {
-        return login.isNotEmpty() && pwd.isNotEmpty()
+        return email.isNotEmpty() && email.isNotEmpty()
     }
 }

@@ -1,8 +1,10 @@
 package com.example.teervoetpuntjesapp.network
 
 import com.example.teervoetpuntjesapp.Model.Badge
+import com.example.teervoetpuntjesapp.Model.Credentials
 import com.example.teervoetpuntjesapp.Model.Gebruiker
 import com.example.teervoetpuntjesapp.Model.Puntje
+import com.example.teervoetpuntjesapp.data.puntje.PuntjeGet
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -16,25 +18,19 @@ interface ApiService {
     @GET("gebruikers/puntjes/{id}")
     suspend fun getGebruikerPuntjes(
         @Path("id") id: Int,
-    ): List<Int>
+    ): List<PuntjeGet>
 
     @GET("puntjes")
     suspend fun getPuntjes(): List<Puntje>
 
-    @GET("gebruikers/{email}")
-    suspend fun getGebruikerByEmail(
-        @Path("email") email: String,
-        @Body password: String,
-    ): Gebruiker
-
     @POST("gebruikers")
-    suspend fun insertGebruiker(@Body gebruiker: Gebruiker)
+    suspend fun getGebruikerByEmail(
+        @Body credentials: Credentials,
+    ): Gebruiker
 
     @POST("gebruikers/puntjes/{id}")
     suspend fun addGebruikerPuntjes(
         @Path("id") id: Int,
         @Body puntjesIds: List<Int>,
     )
-
-
 }

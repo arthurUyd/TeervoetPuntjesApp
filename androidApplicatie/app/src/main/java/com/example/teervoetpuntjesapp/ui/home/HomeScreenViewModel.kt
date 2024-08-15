@@ -20,7 +20,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+data class HomeScreenState(
+    val badges: BadgeUiState,
+    val isRefreshing: Boolean,
+    val isError: Boolean,
+    val currentBadge: Int = 0
+)
 
+sealed interface BadgeUiState {
+    data class Success(val badges: List<Badge>) : BadgeUiState
+    object Error : BadgeUiState
+    object Loading : BadgeUiState
+}
 class HomeScreenViewModel(
     private val badgeRepository: BadgeRepository,
 ) : ViewModel() {

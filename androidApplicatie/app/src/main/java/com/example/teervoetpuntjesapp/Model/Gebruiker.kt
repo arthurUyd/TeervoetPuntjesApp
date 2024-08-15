@@ -9,7 +9,6 @@ data class Gebruiker(
     val email: String,
     val password: String,
     val isLeider: Int,
-    //  val puntjes: List<Int>? = null,
 )
 
 @Serializable

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,16 +22,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.teervoetpuntjesapp.Model.Badge
+import com.example.teervoetpuntjesapp.Model.Puntje
 import com.example.teervoetpuntjesapp.R
+import com.example.teervoetpuntjesapp.componenten.PuntjesKaart
+import com.example.teervoetpuntjesapp.ui.login.LoginFormViewModel
 import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
+import com.example.teervoetpuntjesapp.ui.shared.ErrorScreen
+import com.example.teervoetpuntjesapp.ui.shared.LoadingScreen
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 
 object BadgeDetailsDestination : NavigationDestination {
@@ -39,16 +49,41 @@ object BadgeDetailsDestination : NavigationDestination {
 }
 
 @Composable
-fun BadgePagina(
-    badgeId: Int = 1,
-    viewModel: BadgePaginaViewModel = viewModel(factory = BadgePaginaViewModel.Factory),
+fun BadgeScreen(
+    id: Int,
+    modifier: Modifier = Modifier,
+    onBackButtonClicked: () -> Unit,
 ) {
-    val badge by viewModel.badge.collectAsState()
+    var viewModel: BadgePaginaViewModel = viewModel(factory = BadgePaginaViewModel.Factory)
+    var userviewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
 
-    LaunchedEffect(badge) {
-        viewModel.getBadge(badgeId)
+    val behaaldebadges = userviewModel.badges
+
+    val badgeUiState = viewModel.badgeUiState
+
+    LaunchedEffect(id) {
+        viewModel.getBadge(id)
+        userviewModel.getBadges()
     }
 
+    when (badgeUiState) {
+        is BadgeUiState.Success -> {
+            val badge = badgeUiState.badge
+            val puntjes = badgeUiState.puntjes
+            BadgeDetail(badge = badge, puntjes = puntjes, onBackButtonClicked = { onBackButtonClicked() }, behaaldeBadges = behaaldebadges)
+        }
+        is BadgeUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+        is BadgeUiState.Error -> ErrorScreen(modifier = modifier.fillMaxSize())
+    }
+}
+
+@Composable
+fun BadgeDetail(
+    badge: Badge,
+    onBackButtonClicked: () -> Unit,
+    puntjes: List<Puntje>,
+    behaaldeBadges: List<Int>,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -56,8 +91,13 @@ fun BadgePagina(
             .verticalScroll(rememberScrollState()).fillMaxSize(),
     ) {
         AsyncImage(
-            model = badge.image_url,
-            contentDescription = "badge icon",
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(badge.image_url)
+                .crossfade(true)
+                .build(),
+            contentDescription = "logo van de badge",
+            error = painterResource(R.drawable.ic_broken_image),
+            placeholder = painterResource(R.drawable.loading_img),
             modifier = Modifier.size(200.dp),
         )
         badge?.titel?.let {
@@ -79,73 +119,56 @@ fun BadgePagina(
                 modifier = Modifier.padding(15.dp)
                     .background(MaterialTheme.colorScheme.primaryContainer),
             ) {
-//                filteredPuntjes.forEach {
-//                    if (hasValue(viewModel, it.id)) {
-//                        PuntjesKaart(
-//                            puntje = it,
-//                            isDone = true,
-//                            onChecked = { viewModel.behaaldePuntjes.add(it.id) },
-//                        )
-//                    } else {
-//                        PuntjesKaart(
-//                            puntje = it,
-//                            isDone = false,
-//                            onChecked = { viewModel.behaaldePuntjes.add(it.id) },
-//                        )
-//                    }
-            }
-            Row {
-                Button(
-                    onClick = {
-//                            viewModel.behaaldePuntjes.clear()
-                        // {TODO}
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    ),
-                ) {
-                    Text(
-                        text = "Terug",
-                        fontFamily = quicksandFontFamily,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                puntjes.forEach { puntje ->
+                    if (behaaldeBadges.contains(puntje.id)) {
+                        PuntjesKaart(
+                            puntje = puntje,
+                            isDone = true,
+                            onChecked = { },
+                        )
+                    } else {
+                        PuntjesKaart(
+                            puntje = puntje,
+                            isDone = false,
+                            onChecked = { },
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    onClick = { // {TODO}
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    ),
-                ) {
-                    Text(
-                        text = "Onderteken",
-                        fontFamily = quicksandFontFamily,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                Row {
+                    Button(
+                        onClick = {
+                            onBackButtonClicked()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
+                    ) {
+                        Text(
+                            text = "Terug",
+                            fontFamily = quicksandFontFamily,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Button(
+                        onClick = {
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
+                    ) {
+                        Text(
+                            text = "Onderteken",
+                            fontFamily = quicksandFontFamily,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
         }
     }
-    AsyncImage(
-        model = badge?.image_url,
-        contentDescription = "badge icon",
-        modifier = Modifier.size(200.dp),
-    )
-    AsyncImage(
-        model = badge?.image_url,
-        contentDescription = "badge icon",
-        modifier = Modifier.size(200.dp),
-    )
 }
-
-// fun hasValue(viewModel: AppViewModel, id: Int): Boolean {
-//    viewModel.huidigeGebruiker.value?.puntjes?.forEach {
-//        if (it.punt_id == id) return true
-//    }
-//    return false
-// }

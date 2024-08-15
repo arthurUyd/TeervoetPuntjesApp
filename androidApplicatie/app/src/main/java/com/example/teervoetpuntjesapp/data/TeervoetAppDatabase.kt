@@ -6,19 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.teervoetpuntjesapp.data.badge.BadgeDao
 import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
-import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerDao
-import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerEntity
-import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerPuntjeDao
-import com.example.teervoetpuntjesapp.data.gebruiker.Gebruiker_PuntjeEntity
 import com.example.teervoetpuntjesapp.data.puntje.PuntjeDao
 import com.example.teervoetpuntjesapp.data.puntje.PuntjeEntity
 
-@Database(entities = [BadgeEntity::class, PuntjeEntity::class, GebruikerEntity::class, Gebruiker_PuntjeEntity::class], version = 1, exportSchema = false)
+@Database(entities = [BadgeEntity::class, PuntjeEntity::class], version = 1, exportSchema = false)
 abstract class TeervoetAppDatabase : RoomDatabase() {
     abstract fun badgeDao(): BadgeDao
-    abstract fun gebruikerDao(): GebruikerDao
     abstract fun puntjeDao(): PuntjeDao
-    abstract fun gebruikerPuntjeDao(): GebruikerPuntjeDao
 
     companion object {
         @Volatile

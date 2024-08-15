@@ -4,13 +4,16 @@ import android.content.Context
 import com.example.teervoetpuntjesapp.data.badge.BadgeRepository
 import com.example.teervoetpuntjesapp.data.badge.OfflineFirstBadgeRepository
 import com.example.teervoetpuntjesapp.data.gebruiker.GebruikerRepository
-import com.example.teervoetpuntjesapp.data.gebruiker.OfflineFirstGebruikerRepository
+import com.example.teervoetpuntjesapp.data.gebruiker.NetworkGebruikerRepository
 import com.example.teervoetpuntjesapp.data.puntje.OfflineFirstPuntjesRepository
 import com.example.teervoetpuntjesapp.data.puntje.PuntjesRepository
 import com.example.teervoetpuntjesapp.network.ApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
+import okhttp3.logging.HttpLoggingInterceptor
+
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 interface AppContainer {
@@ -25,7 +28,14 @@ class DefaultAppContainer(
 
     private val BASE_URL = "http://10.0.2.2:9000/api/"
 
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
     private val retrofit: Retrofit = Retrofit.Builder()
+        .client(client)
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
         .build()
@@ -41,9 +51,7 @@ class DefaultAppContainer(
         OfflineFirstPuntjesRepository(TeervoetAppDatabase.getDatabase(context).puntjeDao(), teervoetRetrofitService)
     }
     override val gebruikerRepository: GebruikerRepository by lazy {
-        OfflineFirstGebruikerRepository(
-            TeervoetAppDatabase.getDatabase(context).gebruikerDao(),
-            TeervoetAppDatabase.getDatabase(context).gebruikerPuntjeDao(),
+        NetworkGebruikerRepository(
             teervoetRetrofitService,
         )
     }

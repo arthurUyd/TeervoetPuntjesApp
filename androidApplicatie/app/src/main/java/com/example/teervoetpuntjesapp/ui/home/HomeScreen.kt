@@ -62,7 +62,7 @@ fun HomeScreen(
             is BadgeUiState.Loading -> Text(stringResource(id = R.string.loading_text))
             is BadgeUiState.Error -> Text(text = stringResource(id = R.string.error_text))
             is BadgeUiState.Success -> BadgeLijst(uiState = uiState.badges, modifier = modifier, onPress = { id -> badgePress(id) })
-            else -> Text("")
+
         }
     }
 }
