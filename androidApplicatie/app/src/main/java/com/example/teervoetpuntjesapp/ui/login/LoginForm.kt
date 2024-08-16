@@ -21,7 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -55,6 +54,15 @@ object LoginDestination : NavigationDestination {
     override val titleRes = R.string.Login
 }
 
+/**
+ * Composable functie voor het weergeven van het loginformulier.
+ *
+ * Deze composable stelt gebruikers in staat om hun inloggegevens (e-mail en wachtwoord) in te voeren.
+ * Het behandelt ook het klikken op de login-knop en roept de LoginFormViewModel aan om de loginactie uit te voeren.
+ *
+ * @param loginSuccess Functie die wordt aangeroepen wanneer de login succesvol is.
+ * @param viewModel De LoginFormViewModel instantie voor de loginlogica.
+ */
 @Composable
 fun LoginForm(
     loginSuccess: () -> Unit,
@@ -62,13 +70,12 @@ fun LoginForm(
 ) {
     val loginResult by viewModel.loginResult.collectAsState()
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = loginResult) {
         if (loginResult is LoginResult.Success) {
             loginSuccess()
             Toast.makeText(context, "Login SuccesFull!", Toast.LENGTH_SHORT).show()
-        } else if(loginResult is LoginResult.Error) {
+        } else if (loginResult is LoginResult.Error) {
             Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
         }
     }
@@ -117,6 +124,15 @@ fun LoginForm(
     }
 }
 
+/**
+ * Deze composable stelt gebruikers in staat om hun e-mailadres in te voeren.
+ *
+ * @param value De huidige waarde van het invoerveld.
+ * @param onChange Functie die wordt aangeroepen wanneer de waarde van het invoerveld verandert.
+ * @param modifier Modifier om de stijl van de composable aan te passen. (optioneel)
+ * @param label Labeltekst die boven het invoerveld wordt weergegeven. (standaard: "Login")
+ * @param placeholder Placeholder tekst die in het invoerveld wordt weergegeven. (standaard: "Voer je login in")
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginField(
@@ -165,6 +181,19 @@ fun LoginField(
 
     ) }
 
+/**
+ * Composable functie voor het weergeven van een wachtwoord invoerveld.
+ *
+ * Deze composable stelt gebruikers in staat om hun wachtwoord in te voeren. Het biedt de mogelijkheid
+ * om de zichtbaarheid van het wachtwoord te wisselen met behulp van een pictogram.
+ *
+ * @param value De huidige waarde van het wachtwoordveld.
+ * @param onChange Functie die wordt aangeroepen wanneer de waarde van het wachtwoord verandert.
+ * @param modifier Modifier om de stijl van de composable aan te passen. (optioneel)
+ * @param label Labeltekst die boven het invoerveld wordt weergegeven. (standaard: "Wachtwoord")
+ * @param placeholder Placeholder tekst die in het invoerveld wordt weergegeven. (standaard: "Voer je wachtwoord in")
+ * @param submit Functie die wordt aangeroepen wanneer de gebruiker op "Enter" drukt of op de submit knop klikt.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordField(
@@ -227,11 +256,21 @@ object OndertekenLoginDestination : NavigationDestination {
     override val titleRes = R.string.onderteken
 }
 
+/**
+ * Composable functie voor het weergeven van het onderteken formulier.
+ *
+ * Deze composable stelt gebruikers in staat om hun inloggegevens (e-mail en wachtwoord) in te voeren.
+ * Het behandelt ook het klikken op de login-knop en roept de LoginFormViewModel aan om de onderteken actie uit te voeren.
+ *
+ * @param loginSuccess Functie die wordt aangeroepen wanneer de login succesvol is.
+ * @param viewModel De LoginFormViewModel instantie voor de loginlogica.
+ *
+ */
 @Composable
 fun OndertekenLoginForm(
     loginSuccess: () -> Unit,
+    viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
 ) {
-    var viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
     val context = LocalContext.current
 
     Surface {

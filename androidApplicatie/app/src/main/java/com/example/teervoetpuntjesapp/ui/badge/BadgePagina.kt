@@ -42,11 +42,25 @@ import com.example.teervoetpuntjesapp.ui.shared.ErrorScreen
 import com.example.teervoetpuntjesapp.ui.shared.LoadingScreen
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
 
+/**
+ * Klasse die de bestemming voor de Badgepagina voorstelt.
+ */
 object BadgeDetailsDestination : NavigationDestination {
     override val route = "badge_detail"
     override val titleRes = R.string.Badge_details_title
 }
-
+/**
+ * Composable functie voor het weergeven van het detailscherm van een badge.
+ *
+ * Deze functie toont informatie over een specifieke badge, inclusief de afbeelding, titel en
+ * een lijst van bijbehorende puntjes. De gebruiker kan terugkeren naar het vorige scherm
+ * of de badge ondertekenen (indien ingelogd).
+ *
+ * @param id Het identificatienummer van de badge.
+ * @param modifier Optionele modifier om de styling van de composable aan te passen.
+ * @param onBackButtonClicked Functie die wordt aangeroepen wanneer de gebruiker op de terug-knop klikt.
+ * @param onOndertekenClicked Functie die wordt aangeroepen wanneer de gebruiker op de onderteken-knop klikt.
+ */
 @Composable
 fun BadgeScreen(
     id: Int,
@@ -85,6 +99,21 @@ fun BadgeScreen(
     }
 }
 
+/**
+ * Composable functie voor het weergeven van de details van een badge.
+ *
+ * Deze functie toont de afbeelding, titel en een lijst van bijbehorende puntjes. De puntjes worden
+ * weergegeven als PuntjesKaart composables. De gebruiker kan terugkeren naar het vorige scherm
+ * of de badge ondertekenen (indien ingelogd).
+ *
+ * @param badge De Badge data class die de details van de badge bevat.
+ * @param onBackButtonClicked Functie die wordt aangeroepen wanneer de gebruiker op de terug-knop klikt.
+ * @param puntjes Lijst van Puntje data classes die de bijbehorende puntjes voorstellen.
+ * @param behaaldeBadges Lijst van identificatienummers van de puntjes die de gebruiker al behaald heeft.
+ * @param loginResult Resultaat om te weten of de gebruiker is ingelogd.
+ * @param onOndertekenClicked Functie die wordt aangeroepen wanneer de gebruiker op de onderteken-knop klikt.
+ * @param onPuntjeClicked Functie die wordt aangeroepen wanneer de gebruiker op een puntje klikt.
+ */
 @Composable
 fun BadgeDetail(
     badge: Badge,

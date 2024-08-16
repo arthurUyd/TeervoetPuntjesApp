@@ -13,7 +13,15 @@ import com.example.teervoetpuntjesapp.ui.login.OndertekenLoginDestination
 import com.example.teervoetpuntjesapp.ui.login.OndertekenLoginForm
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeDestination
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeScreen
-
+/**
+ * NavHost composable voor het navigeren tussen verschillende schermen in de applicatie.
+ *
+ * Deze composable definieert de verschillende navigatiebestemmingen en hun bijbehorende schermen.
+ * Het gebruikt de NavHostController om de navigatie tussen schermen te beheren.
+ *
+ * @param navController De NavHostController voor het beheren van de navigatie.
+ * @param modifier Optionele modifier om de stijl van de composable aan te passen.
+ */
 @Composable
 fun BadgesNavHost(
     navController: NavHostController,
@@ -36,7 +44,6 @@ fun BadgesNavHost(
         composable(route = BadgeDetailsDestination.route + "/{badge_id}") {
                 backStackEntry ->
             val id = backStackEntry.arguments?.getString("badge_id")?.toInt() ?: return@composable
-            println("getting badge with id: $id")
             BadgeScreen(id, onBackButtonClicked = { navController.navigate(HomeDestination.route) }, onOndertekenClicked = { navController.navigate(OndertekenLoginDestination.route) })
         }
     }

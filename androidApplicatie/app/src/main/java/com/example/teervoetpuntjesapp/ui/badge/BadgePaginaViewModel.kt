@@ -18,19 +18,40 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-sealed interface BadgeUiState {
-    data class Success(val badge: Badge, val puntjes: List<Puntje>) : BadgeUiState
-    object Error : BadgeUiState
-    object Loading : BadgeUiState
+sealed class BadgeUiState {
+    data class Success(val badge: Badge, val puntjes: List<Puntje>) : BadgeUiState()
+    object Error : BadgeUiState()
+    object Loading : BadgeUiState()
 }
+
+/**
+ * ViewModel klasse voor het beheren van de UI state van het badge detailscherm.
+ *
+ * @property badgeRepository [BadgeRepository] instantie voor interactie met de badge data layer.
+ * @property puntjesRepository [PuntjesRepository] instantie voor interactie met de puntjes data layer.
+ */
 class BadgePaginaViewModel(
     private val badgeRepository: BadgeRepository,
     private val puntjesRepository: PuntjesRepository,
 ) : ViewModel() {
 
+    /**
+     * De huidige UI state van het scherm. Kan Loading, Success of Error zijn.
+     *
+     * [BadgeUiState] sealed class definieert de verschillende statussen van de UI.
+     */
     var badgeUiState: BadgeUiState by mutableStateOf(BadgeUiState.Loading)
         private set
 
+    /**
+     * Haalt informatie op over een badge met het opgegeven identificatienummer.
+     *
+     * De functie start een coroutine om de badge informatie op te halen via de BadgeRepository.
+     * Vervolgens worden de bijbehorende puntjes opgehaald via de PuntjesRepository.
+     * De UI state wordt bijgewerkt op basis van het resultaat (succes, laden of fout).
+     *
+     * @param id Het identificatienummer van de badge.
+     */
     fun getBadge(id: Int) {
         viewModelScope.launch {
             badgeUiState = try {
@@ -49,6 +70,13 @@ class BadgePaginaViewModel(
 
     companion object {
         private var Instance: BadgePaginaViewModel? = null
+
+        /**
+         * ViewModelProvider.Factory voor het instantiëren van de BadgePaginaViewModel.
+         *
+         * Deze factory zorgt ervoor dat er slechts één instantie van de ViewModel bestaat
+         * binnen dezelfde scope (bijvoorbeeld activity of fragment).
+         */
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 if (Instance == null) {

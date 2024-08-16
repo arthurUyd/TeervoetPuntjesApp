@@ -1,13 +1,10 @@
 import android.content.Context
-import androidx.compose.runtime.collectAsState
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.teervoetpuntjesapp.data.TeervoetAppDatabase
 import com.example.teervoetpuntjesapp.data.badge.BadgeDao
 import com.example.teervoetpuntjesapp.data.badge.BadgeEntity
-import com.example.teervoetpuntjesapp.data.badge.OfflineFirstBadgeRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -75,11 +72,5 @@ class BadgeDaoTest {
         val badge = badgeDao.getBadge(2).first()
 
         assertEquals(badge2, badge)
-    }
-
-    @Test
-    @Throws(Exception:: class)
-    fun networkGet_getAllBadges() = runBlocking {
-
     }
 }

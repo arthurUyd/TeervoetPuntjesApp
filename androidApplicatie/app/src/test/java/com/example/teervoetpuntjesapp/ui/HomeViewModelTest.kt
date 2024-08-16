@@ -27,7 +27,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `als homescreen state is geïnitializeerd is state loading`() = runTest {
+    fun `als homescreen state is geïnitialiseerd is state loading`() = runTest {
         viewmodel.uiState.test {
             assertEquals(BadgeUiState.Loading, awaitItem().badges)
         }

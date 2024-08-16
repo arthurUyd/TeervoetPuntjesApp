@@ -44,6 +44,18 @@ object HomeDestination : NavigationDestination {
     override val titleRes = R.string.Home
 }
 
+/**
+ * Composable functie voor het weergeven van het home scherm.
+ *
+ * Het home scherm toont een lijst van badges. De data voor de badges wordt opgehaald via de
+ * HomeScreenViewModel. De HomeScreenViewModel kan verschillende statussen hebben (Loading, Success of Error).
+ * Afhankelijk van de status wordt de bijbehorende UI weergegeven.
+ *
+ * @param homeScreenViewModel [HomeScreenViewModel] instantie voor het beheren van de UI state.
+ * @param modifier Optionele modifier om de styling van de composable aan te passen.
+ * @param badgePress Functie die wordt aangeroepen wanneer de gebruiker op een badge klikt.
+ * De functie verwacht het identificatienummer van de badge als parameter.
+ */
 @Composable
 fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModel.Factory),
@@ -62,11 +74,22 @@ fun HomeScreen(
             is BadgeUiState.Loading -> Text(stringResource(id = R.string.loading_text))
             is BadgeUiState.Error -> Text(text = stringResource(id = R.string.error_text))
             is BadgeUiState.Success -> BadgeLijst(uiState = uiState.badges, modifier = modifier, onPress = { id -> badgePress(id) })
-
         }
     }
 }
 
+/**
+ * Composable functie voor het weergeven van een lijst met badges.
+ *
+ * De BadgeLijst functie ontvangt de UI state van de HomeScreenViewModel en toont een LazyColumn
+ * met BadgeCard composables voor elke badge. Afhankelijk van de status (laden, succes of fout)
+ * wordt een indicator, de lijst of een foutmelding weergegeven.
+ *
+ * @param uiState De UI state van de HomeScreenViewModel ([BadgeUiState] sealed class).
+ * @param modifier Optionele modifier om de styling van de composable aan te passen.
+ * @param onPress Functie die wordt aangeroepen wanneer de gebruiker op een badge klikt.
+ * De functie verwacht het identificatienummer van de badge als parameter.
+ */
 @Composable
 fun BadgeLijst(
     uiState: BadgeUiState,
@@ -98,6 +121,17 @@ fun BadgeLijst(
     }
 }
 
+/**
+ * Composable functie voor het weergeven van een individuele badge.
+ *
+ * De BadgeCard functie toont de afbeelding en titel van een badge. De badge informatie
+ * wordt doorgegeven als parameter. De gebruiker kan op de BadgeCard klikken om naar de detail pagina
+ * van deze badge te navigeren.
+ *
+ * @param badge De Badge data class die de details van de badge bevat.
+ * @param modifier Optionele modifier om de styling van de composable aan te passen.
+ * @param onClick Functie die wordt aangeroepen wanneer de gebruiker op de BadgeCard klikt.
+ */
 @Composable
 fun BadgeCard(
     badge: Badge,

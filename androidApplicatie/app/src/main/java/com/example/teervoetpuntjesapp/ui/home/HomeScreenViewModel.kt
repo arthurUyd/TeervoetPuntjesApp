@@ -11,8 +11,6 @@ import com.example.teervoetpuntjesapp.TeervoetApplicatie
 import com.example.teervoetpuntjesapp.core.Result
 import com.example.teervoetpuntjesapp.core.asResult
 import com.example.teervoetpuntjesapp.data.badge.BadgeRepository
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +22,6 @@ data class HomeScreenState(
     val badges: BadgeUiState,
     val isRefreshing: Boolean,
     val isError: Boolean,
-    val currentBadge: Int = 0
 )
 
 sealed interface BadgeUiState {
@@ -32,29 +29,46 @@ sealed interface BadgeUiState {
     object Error : BadgeUiState
     object Loading : BadgeUiState
 }
+
+/**
+ * ViewModel klasse voor het beheren van de UI state van het home scherm.
+ *
+ * De ViewModel is verantwoordelijk voor het ophalen van badge informatie via de BadgeRepository.
+ * De UI state hangt af van de opgehaald badges.
+ *
+ * @property badgeRepository [BadgeRepository] instantie voor interactie met de badge data layer.
+ */
 class HomeScreenViewModel(
     private val badgeRepository: BadgeRepository,
 ) : ViewModel() {
-
-    val exceptionHandler = CoroutineExceptionHandler { context, exception ->
-        viewModelScope.launch {
-            isError.emit(true)
-        }
-    }
-
+    /**
+     * Flow van Result objecten die de uitkomst van het ophalen van badges representeren (Success, Loading of Error).
+     *
+     * De badges Flow wordt opgehaald via de badgeRepository.getBadges() functie en geconverteerd
+     * naar een Result Flow met behulp van de asResult extensie functie.
+     */
     private val badges: Flow<Result<List<Badge>>> =
         badgeRepository.getBadges().asResult()
 
+    /**
+     * StateFlow booleans voor het bijhouden van de laad en fout status.
+     */
     private val isError = MutableStateFlow(false)
     private val isRefreshing = MutableStateFlow(false)
-    private val currentBadge = MutableStateFlow(0)
 
+    /**
+     * StateFlow voor de gecombineerde UI state van het home scherm.
+     *
+     * De uiState Flow combineert de badges Flow, isRefreshing, isError en currentBadge Flow.
+     * Op basis van de gecombineerde waardes wordt de uiteindelijke BadgeUiState bepaald
+     * (Success, Loading of Error) en gecombineerd met de laad, fout en currentBadge status tot
+     * een HomeScreenState object.
+     */
     val uiState: StateFlow<HomeScreenState> = combine(
         badges,
         isRefreshing,
         isError,
-        currentBadge,
-    ) { badgeResult, errorOccurred, refreshing, badgeInt ->
+    ) { badgeResult, errorOccurred, refreshing ->
         val badgestate: BadgeUiState = when (badgeResult) {
             is Result.Success -> BadgeUiState.Success(badgeResult.data)
             is Result.Loading -> BadgeUiState.Loading
@@ -64,7 +78,6 @@ class HomeScreenViewModel(
             badgestate,
             refreshing,
             errorOccurred,
-            badgeInt,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -73,25 +86,12 @@ class HomeScreenViewModel(
             BadgeUiState.Loading,
             isRefreshing = false,
             isError = false,
-            currentBadge = 0,
         ),
     )
 
-
-    fun onRefresh() {
-        viewModelScope.launch(exceptionHandler) {
-            with(badgeRepository) {
-                val refreshBadges = async { refreshBadges() }
-                isRefreshing.emit(true)
-                try {
-                    refreshBadges
-                } finally {
-                    isRefreshing.emit(false)
-                }
-            }
-        }
-    }
-
+    /**
+     * Functie om de isError state te resetten nadat een foutmelding is getoond.
+     */
     fun onErrorConsumed() {
         viewModelScope.launch {
             isError.emit(false)
@@ -100,6 +100,13 @@ class HomeScreenViewModel(
 
     companion object {
         private var Instance: HomeScreenViewModel? = null
+
+        /**
+         * ViewModelProvider.Factory voor het instantiëren van de HomePaginaViewModel.
+         *
+         * Deze factory zorgt ervoor dat er slechts één instantie van de ViewModel bestaat
+         * binnen dezelfde scope (bijvoorbeeld activity of fragment).
+         */
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 if (Instance == null) {

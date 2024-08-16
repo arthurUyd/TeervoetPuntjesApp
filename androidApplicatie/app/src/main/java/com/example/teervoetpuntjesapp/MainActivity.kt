@@ -21,7 +21,18 @@ import com.example.teervoetpuntjesapp.ui.login.LoginFormViewModel
 import com.example.teervoetpuntjesapp.ui.login.LoginResult
 import com.example.teervoetpuntjesapp.ui.navigation.BadgesNavHost
 import com.example.teervoetpuntjesapp.ui.theme.TeervoetPuntjesAppTheme
-
+/**
+ * Hoofdactiviteit van de Teervoetjespuntjes applicatie.
+ *
+ * Deze activiteit verzorgt de opbouw van de user interface met behulp van Jetpack Compose.
+ * Het gebruikt de TeervoetPuntjesAppTheme om de styling van de applicatie te definiëren.
+ * De activiteit maakt gebruik van een Scaffold composable om de top bar, navigatie host en padding toe te voegen.
+ *
+ * De rememberNavController functie wordt gebruikt om een NavController te initialiseren voor navigatie tussen schermen.
+ * De SVKTopAppBar composable wordt gebruikt als top bar en toont de applicatie titel en login/logout knop afhankelijk
+ * van de ingelogde status.
+ * De BadgesNavHost composable verzorgt de navigatie tussen de verschillende schermen in de applicatie.
+ */
 class MainActivity() : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +54,18 @@ class MainActivity() : ComponentActivity() {
         }
     }
 }
-
+/**
+ * Composable functie voor het weergeven van de top bar in de applicatie.
+ *
+ * De top bar toont de applicatie titel (FOS) en een login of logout knop afhankelijk van de
+ * ingelogde status. De login knop navigeert naar het login scherm en de logout knop roept de
+ * logout functie van de LoginFormViewModel aan.
+ *
+ * De LoginFormViewModel wordt opgehaald via viewModel() en de loginResult Flow wordt geobserveerd
+ * met collectAsState() om de login status te bepalen.
+ *
+ * @param onLoginClicked Functie die wordt aangeroepen wanneer er op de login knop wordt geklikt.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SVKTopAppBar(onLoginClicked: () -> Unit) {

@@ -10,10 +10,7 @@ import com.example.teervoetpuntjesapp.data.puntje.PuntjesRepository
 import com.example.teervoetpuntjesapp.network.ApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import okhttp3.logging.HttpLoggingInterceptor
-
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 interface AppContainer {
@@ -22,6 +19,10 @@ interface AppContainer {
     val puntjesRepository: PuntjesRepository
 }
 
+/**
+ * Deze klasse implementeert de `AppContainer` interface en biedt concrete implementaties
+ * voor de `GebruikerRepository`, `BadgeRepository`, en `PuntjesRepository` interfaces.
+ */
 class DefaultAppContainer(
     private val context: Context,
 ) : AppContainer {
@@ -34,6 +35,7 @@ class DefaultAppContainer(
 //    private val client = OkHttpClient.Builder()
 //        .addInterceptor(loggingInterceptor)
 //        .build()
+
     private val retrofit: Retrofit = Retrofit.Builder()
 //        .client(client)
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -44,12 +46,23 @@ class DefaultAppContainer(
         retrofit.create(ApiService::class.java)
     }
 
+    /**
+     * BadgeRepository implementatie die gebruik maakt van offline-first strategie.
+     */
     override val badgeRepository: BadgeRepository by lazy {
         OfflineFirstBadgeRepository(TeervoetAppDatabase.getDatabase(context).badgeDao(), teervoetRetrofitService)
     }
+
+    /**
+     * PuntjesRepository implementatie die gebruik maakt van offline-first strategie.
+     */
     override val puntjesRepository: PuntjesRepository by lazy {
         OfflineFirstPuntjesRepository(TeervoetAppDatabase.getDatabase(context).puntjeDao(), teervoetRetrofitService)
     }
+
+    /**
+     * GebruikerRepository implementatie die data ophaalt via de netwerk-API.
+     */
     override val gebruikerRepository: GebruikerRepository by lazy {
         NetworkGebruikerRepository(
             teervoetRetrofitService,

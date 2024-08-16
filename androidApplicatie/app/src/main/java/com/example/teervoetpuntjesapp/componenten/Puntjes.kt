@@ -21,7 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.teervoetpuntjesapp.Model.Puntje
 import com.example.teervoetpuntjesapp.ui.theme.quicksandFontFamily
-
+/**
+ * Een composable die een kaart weergeeft voor een puntje, met een checkbox om het als voltooid te markeren.
+ *
+ * @param puntje Het Puntje-object.
+ * @param isDone Een Boolean waarde die aangeeft of het puntje al voltooid is.
+ * @param onChecked Een callback-functie die wordt aangeroepen wanneer het checkboxje wordt aangevinkt of uitgevinkt.
+ */
 @Composable
 fun PuntjesKaart(
     puntje: Puntje,
