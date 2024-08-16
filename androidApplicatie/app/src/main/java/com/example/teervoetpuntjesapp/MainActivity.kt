@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
@@ -56,10 +55,18 @@ fun SVKTopAppBar(onLoginClicked: () -> Unit) {
             Text(text = stringResource(R.string.fos))
         },
         actions = {
-            TextButton(onClick = {
-                onLoginClicked()
-            }) {
-                Text(text = if (loginResult is LoginResult.Success) stringResource(R.string.logout) else stringResource(R.string.login))
+            if (loginResult is LoginResult.Error || loginResult is LoginResult.Nothing) {
+                TextButton(onClick = {
+                    onLoginClicked()
+                }) {
+                    Text(text = stringResource(R.string.login))
+                }
+            } else {
+                TextButton(onClick = {
+                    viewModel.logout()
+                }) {
+                    Text(text = stringResource(R.string.logout))
+                }
             }
         },
     )

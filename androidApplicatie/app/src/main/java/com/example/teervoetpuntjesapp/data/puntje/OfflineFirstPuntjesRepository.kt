@@ -27,5 +27,4 @@ class OfflineFirstPuntjesRepository(
                 puntjeDao.insert(puntjes.map(Puntje::asPuntjeEntity))
             }
     }
-
 }

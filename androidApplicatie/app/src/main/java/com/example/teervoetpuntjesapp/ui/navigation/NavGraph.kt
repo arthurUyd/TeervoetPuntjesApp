@@ -9,6 +9,8 @@ import com.example.teervoetpuntjesapp.ui.badge.BadgeDetailsDestination
 import com.example.teervoetpuntjesapp.ui.badge.BadgeScreen
 import com.example.teervoetpuntjesapp.ui.login.LoginDestination
 import com.example.teervoetpuntjesapp.ui.login.LoginForm
+import com.example.teervoetpuntjesapp.ui.login.OndertekenLoginDestination
+import com.example.teervoetpuntjesapp.ui.login.OndertekenLoginForm
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeDestination
 import com.example.teervoetpuntjesapp.ui.theme.pages.HomeScreen
 
@@ -28,11 +30,14 @@ fun BadgesNavHost(
         composable(route = LoginDestination.route) {
             LoginForm(loginSuccess = { navController.navigate(HomeDestination.route) })
         }
+        composable(route = OndertekenLoginDestination.route) {
+            OndertekenLoginForm(loginSuccess = { navController.navigate(HomeDestination.route) })
+        }
         composable(route = BadgeDetailsDestination.route + "/{badge_id}") {
                 backStackEntry ->
             val id = backStackEntry.arguments?.getString("badge_id")?.toInt() ?: return@composable
             println("getting badge with id: $id")
-            BadgeScreen(id, onBackButtonClicked = { navController.navigate(HomeDestination.route) })
+            BadgeScreen(id, onBackButtonClicked = { navController.navigate(HomeDestination.route) }, onOndertekenClicked = { navController.navigate(OndertekenLoginDestination.route) })
         }
     }
 }

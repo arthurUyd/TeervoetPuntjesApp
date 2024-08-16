@@ -13,5 +13,6 @@
     <string name="fos">FOS</string>
     <string name="login">login</string>
     <string name="logout">Logout</string>
+    <string name="onderteken">Onderteken\n</string>
 
 </resources>

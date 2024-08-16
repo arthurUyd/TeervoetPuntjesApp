@@ -21,11 +21,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,11 +58,20 @@ object LoginDestination : NavigationDestination {
 @Composable
 fun LoginForm(
     loginSuccess: () -> Unit,
+    viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory),
 ) {
-    var viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
-    val context = LocalContext.current
     val loginResult by viewModel.loginResult.collectAsState()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(key1 = loginResult) {
+        if (loginResult is LoginResult.Success) {
+            loginSuccess()
+            Toast.makeText(context, "Login SuccesFull!", Toast.LENGTH_SHORT).show()
+        } else if(loginResult is LoginResult.Error) {
+            Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
+        }
+    }
     Surface {
         var credentials by remember { mutableStateOf(Credentials()) }
 
@@ -82,10 +93,7 @@ fun LoginForm(
                     try {
                         viewModel.login(credentials.email, credentials.password)
                     } catch (e: Exception) {
-                        Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
-                    }
-                    if (loginResult is LoginResult.Success) {
-                        loginSuccess()
+                        println("error for login")
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -97,9 +105,6 @@ fun LoginForm(
                         viewModel.login(credentials.email, credentials.password)
                     } catch (e: Exception) {
                         Toast.makeText(context, "wrong credentials", Toast.LENGTH_SHORT).show()
-                    }
-                    if (loginResult is LoginResult.Success) {
-                        loginSuccess()
                     }
                 },
                 enabled = credentials.isNotEmpty(),
@@ -217,3 +222,61 @@ fun PasswordField(
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
 
     ) }
+object OndertekenLoginDestination : NavigationDestination {
+    override val route = "onderteken"
+    override val titleRes = R.string.onderteken
+}
+
+@Composable
+fun OndertekenLoginForm(
+    loginSuccess: () -> Unit,
+) {
+    var viewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
+    val context = LocalContext.current
+
+    Surface {
+        var credentials by remember { mutableStateOf(Credentials()) }
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().padding(horizontal = 30.dp),
+        ) {
+            LoginField(
+                value = credentials.email,
+                onChange = { data -> credentials = credentials.copy(email = data) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            PasswordField(
+                value = credentials.password,
+                onChange = { data -> credentials = credentials.copy(password = data) },
+                submit = {
+                    try {
+                        viewModel.AddPuntjes(credentials.email, credentials.password)
+                        loginSuccess()
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Gebruiker is geen leider", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = {
+                    try {
+                        viewModel.AddPuntjes(credentials.email, credentials.password)
+                        loginSuccess()
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Gebruiker is geen leider", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                enabled = credentials.isNotEmpty(),
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(text = "Login")
+            }
+        }
+    }
+}

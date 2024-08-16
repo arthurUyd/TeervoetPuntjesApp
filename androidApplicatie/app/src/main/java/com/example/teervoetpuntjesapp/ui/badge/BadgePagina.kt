@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -24,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +36,7 @@ import com.example.teervoetpuntjesapp.Model.Puntje
 import com.example.teervoetpuntjesapp.R
 import com.example.teervoetpuntjesapp.componenten.PuntjesKaart
 import com.example.teervoetpuntjesapp.ui.login.LoginFormViewModel
+import com.example.teervoetpuntjesapp.ui.login.LoginResult
 import com.example.teervoetpuntjesapp.ui.navigation.NavigationDestination
 import com.example.teervoetpuntjesapp.ui.shared.ErrorScreen
 import com.example.teervoetpuntjesapp.ui.shared.LoadingScreen
@@ -53,10 +52,11 @@ fun BadgeScreen(
     id: Int,
     modifier: Modifier = Modifier,
     onBackButtonClicked: () -> Unit,
+    onOndertekenClicked: () -> Unit,
 ) {
     var viewModel: BadgePaginaViewModel = viewModel(factory = BadgePaginaViewModel.Factory)
     var userviewModel: LoginFormViewModel = viewModel(factory = LoginFormViewModel.Factory)
-
+    val loginResult by userviewModel.loginResult.collectAsState()
     val behaaldebadges = userviewModel.badges
 
     val badgeUiState = viewModel.badgeUiState
@@ -70,7 +70,15 @@ fun BadgeScreen(
         is BadgeUiState.Success -> {
             val badge = badgeUiState.badge
             val puntjes = badgeUiState.puntjes
-            BadgeDetail(badge = badge, puntjes = puntjes, onBackButtonClicked = { onBackButtonClicked() }, behaaldeBadges = behaaldebadges)
+            BadgeDetail(
+                badge = badge,
+                puntjes = puntjes,
+                onBackButtonClicked = { onBackButtonClicked() },
+                behaaldeBadges = behaaldebadges,
+                loginResult = loginResult,
+                onOndertekenClicked = { onOndertekenClicked() },
+                onPuntjeClicked = { userviewModel.PuntjeClicked(it) },
+            )
         }
         is BadgeUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
         is BadgeUiState.Error -> ErrorScreen(modifier = modifier.fillMaxSize())
@@ -83,6 +91,9 @@ fun BadgeDetail(
     onBackButtonClicked: () -> Unit,
     puntjes: List<Puntje>,
     behaaldeBadges: List<Int>,
+    loginResult: LoginResult,
+    onOndertekenClicked: () -> Unit,
+    onPuntjeClicked: (Int) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,13 +135,13 @@ fun BadgeDetail(
                         PuntjesKaart(
                             puntje = puntje,
                             isDone = true,
-                            onChecked = { },
+                            onChecked = { onPuntjeClicked(puntje.id) },
                         )
                     } else {
                         PuntjesKaart(
                             puntje = puntje,
                             isDone = false,
-                            onChecked = { },
+                            onChecked = { onPuntjeClicked(puntje.id) },
                         )
                     }
                 }
@@ -152,20 +163,23 @@ fun BadgeDetail(
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    Button(
-                        onClick = {
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        ),
-                    ) {
-                        Text(
-                            text = "Onderteken",
-                            fontFamily = quicksandFontFamily,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                    if (loginResult is LoginResult.Success) {
+                        Button(
+                            onClick = {
+                                onOndertekenClicked()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            ),
+                        ) {
+                            Text(
+                                text = "Onderteken",
+                                fontFamily = quicksandFontFamily,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }

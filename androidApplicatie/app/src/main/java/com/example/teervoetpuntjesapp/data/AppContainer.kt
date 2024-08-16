@@ -28,14 +28,14 @@ class DefaultAppContainer(
 
     private val BASE_URL = "http://10.0.2.2:9000/api/"
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
+//    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+//        level = HttpLoggingInterceptor.Level.BODY
+//    }
+//    private val client = OkHttpClient.Builder()
+//        .addInterceptor(loggingInterceptor)
+//        .build()
     private val retrofit: Retrofit = Retrofit.Builder()
-        .client(client)
+//        .client(client)
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
         .build()
