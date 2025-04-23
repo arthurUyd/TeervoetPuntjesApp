@@ -6,7 +6,7 @@ module.exports = {
       table.increments('id').primary();
       table.string('titel').notNullable();
       table.string('image_url').notNullable();
-      
+      table.string('file_url').notNullable();
     });
   },
 
