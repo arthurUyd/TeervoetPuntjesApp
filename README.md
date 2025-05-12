@@ -1,5 +1,4 @@
 # TeervoetPuntjesApp
-opdracht android 2023
 
 Dit is een applicatie gemaakt met een zelfgemaakte Node.js backend voor de bijbehorende Android-applicatie.
 
